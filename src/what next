@@ -1,0 +1,18 @@
+7 -- another additions (soft loading , translatting)
+
+
+// finished
+1 -- complete making style in cartTag and cart_page
+2 -- add redux on cart_page(remove or add) and cart_page(remove all)
+3 -- add function on cart_page(update your product) 
+4 -- set localStorage on redux
+5 -- go to home.js and fetch the data according to category
+6 -- start mediaQuery
+    1-- navbar
+    2-- home and its components
+    3-- product and its components
+    4-- cart and its components 
+
+
+// In future
+1 -- add node.js & mongoDB on project (mern stack)

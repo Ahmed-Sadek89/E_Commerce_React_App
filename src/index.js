@@ -1,17 +1,38 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
+import './App.css';
+import Reducer from './Components/Redux/Reducer';
+import {Provider} from 'react-redux';
+import {createStore} from 'redux';
+
+const loadState = () =>{
+  try{
+    const myState = localStorage.getItem('cart');
+    if(myState !== null){
+      return JSON.parse(myState);
+    }
+  }catch(e){
+    // error ignoration
+  }
+  
+}
+const saveState = (myState) => {
+  //console.log('saveState..')
+  localStorage.setItem('cart', JSON.stringify(myState));
+}
+
+
+const store = createStore(Reducer, loadState());
+
+store.subscribe(() => {
+  saveState(store.getState());
+});
+
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <Provider store={store}>
+    <App className='App'/>
+  </Provider>,
   document.getElementById('root')
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
