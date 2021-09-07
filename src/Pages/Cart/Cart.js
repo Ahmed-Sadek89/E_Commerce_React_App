@@ -3,7 +3,7 @@ import {Typography, Container, Grid, Button} from '@material-ui/core';
 //components
 import CartTag from '../../Components/CartTag/CartTag';
 import { useStyles } from './Style';
-import {clear_All_products_fn} from '../../Components/Redux/Action'
+import {clear_All_products_fn} from '../../Components/Redux/Cart/Action'
 //styles
 import {SetRecet, Line, Hr } from './Style';
 //tools
@@ -34,8 +34,8 @@ const Cart = (props) => {
                        item={item}
                        id={item.id} 
                        cart={item.product} 
-                       amount={item.amount1} 
-                       total={item.total1} 
+                       amount={item.amount} 
+                       total={item.total} 
                        date={item.date}
                       />
                     )
@@ -61,7 +61,7 @@ const Cart = (props) => {
                             SubTotal
                           </Typography>
                           <Typography className='inherit'>
-                            EGP {props.getTotalPrice.toFixed(2)}
+                            $ {props.getTotalPrice.toFixed(2)}
                           </Typography>
                         </Line>
                         <Line>
@@ -69,7 +69,7 @@ const Cart = (props) => {
                             Delivery
                           </Typography>
                           <Typography className='inherit'>
-                            EGP 50.00
+                            $ 50.00
                           </Typography>
                         </Line>
 
@@ -84,7 +84,7 @@ const Cart = (props) => {
                             order total
                           </Typography>
                           <Typography className='inherit'>
-                            EGP {(props.getTotalPrice + 50).toFixed(2)}
+                            $ {(props.getTotalPrice + 50).toFixed(2)}
                           </Typography>
                         </Line>
                         <Button color='primary' variant='contained' className={classes.checkout} fullWidth
@@ -104,9 +104,9 @@ const Cart = (props) => {
   }
 const mapStateToProps = (state) =>{
   return{
-    ProductState: state,
-    getTotalAmount: state.length,
-    getTotalPrice: state.reduce((ack, data) => ack + data.total1, 0)
+    ProductState: state.cart,
+    getTotalAmount: state.cart.length,
+    getTotalPrice: state.cart.reduce((ack, data) => ack + data.total, 0)
   }
 }  
 export default connect(mapStateToProps,{clear_All_products_fn})(Cart);

@@ -17,13 +17,13 @@ const Navbar = (props) => {
             <div className='left'>
               <NLink to='/'>
                 <Typography variant='h4' color='primary'>
-                  <Typography variant='inherit'>App</Typography><Typography variant='inherit' color='secondary' className={classes.brand}>Store</Typography>
+                  <Typography variant='inherit'>E_Commerce</Typography><Typography variant='inherit' color='secondary' className={classes.brand}>App</Typography>
                 </Typography>
               </NLink>
             </div>
             <Right>
               <Typography variant='h6'>
-                  EGP {props.getTotalPrice ? props.getTotalPrice.toFixed(2) : '0.00'} 
+                  $ {props.getTotalPrice ? props.getTotalPrice.toFixed(2) : '0.00'}
               </Typography>
               <NLink to='/cart'>
                 <IconButton aria-label="cart">
@@ -54,12 +54,11 @@ const Navbar = (props) => {
     </>
     );
   }
-const mapStateToProps =(state) =>{
+const mapStateToProps = (state) => {
   return{
-    //getTotalAmount: state.reduce((ack, data) => ack + data.amount1, 0),
-    getTotalAmount: state.length,
-    getTotalPrice: state.reduce((ack, data) => ack + data.total1, 0)
+    getTotalAmount: state.cart.reduce((ack, data) => ack + data.amount, 0),
+    getTotalPrice: state.cart.reduce((ack, data) => ack + data.total, 0),
   }
-}  
-export default connect(mapStateToProps,null)(Navbar);
+}
+export default connect(mapStateToProps, null)(Navbar);
   

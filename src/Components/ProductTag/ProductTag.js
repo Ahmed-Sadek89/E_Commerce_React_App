@@ -15,7 +15,7 @@ const ProductTag = ({product}) => {
               {product.title}
             </Title>
             <Price variant='inherit'>
-              EGP {product.price}
+              $ {product.price}
             </Price>
           </Overlay>
         </Grid>

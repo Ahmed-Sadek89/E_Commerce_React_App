@@ -1,36 +1,31 @@
 //tools
 import {useQuery} from 'react-query';
-import {useStyles} from './Style';
-import {connect} from 'react-redux';
-import { useState } from 'react';
+import { connect } from 'react-redux';
+import {useHistory} from 'react-router-dom'
 //material-ui
 import {Container ,Typography, Grid, Button } from '@material-ui/core';
+import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
+import AddShoppingCartOutlinedIcon from '@material-ui/icons/AddShoppingCartOutlined';
 //components
 import {fetchTheSelectedProduct} from '../../Components/Api/Api';
-import {add_product_fn} from '../../Components/Redux/Action';
+import {add_product_fn} from '../../Components/Redux/Cart/Action'
 //styles
-import {Img, Content, Select} from './Style';
+import {Img, Content} from './Style';
+import {useStyles} from './Style';
 
 
 const Product = (props) => {
   const id = parseInt(props.match.params.id) ? parseInt(props.match.params.id) : 1
   const {data, status } = useQuery('ProductPage', () =>fetchTheSelectedProduct(id));
   const classes = useStyles();
-
-  console.log('ProductState: ', props.ProductState)
-  //console.log('getTotalAmount: ', props.getTotalAmount)
-  //console.log('getTotalPrice: ', props.getTotalPrice)
-  
-  const [product, setProduct]= useState({});
-  const [amount, setAmount]= useState(1);
-  const AddToCart = (e) =>{
-    e.preventDefault();
-    if(amount === null || amount === 0 || amount === 1){
-      setAmount(1)
-    }
-    setProduct(data);
-    props.add_product_fn(data, amount, amount * data.price);
-
+  // check if product is added or not
+  const isAddedToCart = props.state.find(item => item.id === id)
+  const disabled = isAddedToCart ? true : false
+  const btnText = disabled ? 'In Cart': 'Add To Cart';
+  //
+  const history = useHistory()
+  const AddToCartHandler = () =>{
+    props.AddToCart(data.id, data, data.price)
   }
     return (
       
@@ -39,7 +34,7 @@ const Product = (props) => {
         {
           status ==='loading' &&
           <Typography variant='h1' color='primary' className={classes.textMessage}>
-            L O o D I N G.......
+            Loading.......
           </Typography>
         }
         {
@@ -50,6 +45,7 @@ const Product = (props) => {
         }
         {
           status ==='success' &&
+          data ?
           <Grid container spacing={4}>
             <Grid item xs={12} md={6}>
                 <div>
@@ -66,28 +62,30 @@ const Product = (props) => {
                     {data.title}
                   </Typography>
                   <Typography variant='h4' className={classes.price}>
-                    EGP {data.price}
+                    $ {data.price}
                   </Typography>
-                  
-                  <form onSubmit={AddToCart}>
-                    <Select value={amount} onChange={(e) => setAmount(parseInt(e.target.value))}>
-                      <option value={1}>1</option>
-                      <option value={2}>2</option>
-                      <option value={3}>3</option>
-                      <option value={4}>4</option>
-                      <option value={5}>5</option>
-                      <option value={6}>6</option>
-                    </Select>
-                    <Button type='submit' color='primary' variant='contained'>
-                      Add To Cart
+                  {
+                    disabled === false &&
+                    <Button color='primary' startIcon={<AddShoppingCartOutlinedIcon />} variant='contained' onClick={ AddToCartHandler }>
+                      {btnText}
                     </Button>
-                  </form>
+                  }
+                  {
+                    disabled === true &&
+                    <Button color='inherit' endIcon={<ShoppingCartOutlinedIcon />} variant='contained' onClick={() => history.push('/cart')}>
+                      {btnText}
+                    </Button>
+                  } 
                   <Typography variant='h6' className={classes.description}>
                      {data.description}
                   </Typography>
                 </Content>
             </Grid>
           </Grid>
+          :
+          <Typography variant='h1' color='primary' className={classes.textMessage}>
+            Reload the page if it nessesary.......
+          </Typography>
         }      
         
         </Container>
@@ -95,10 +93,16 @@ const Product = (props) => {
       
     );
   }
-const mapDispatchToProps = (state) =>{
-  return {
-    ProductState: state
+const mapStateToProps = (state) => {
+  return{
+    state: state.cart
   }
 }
-export default connect(mapDispatchToProps, {add_product_fn})(Product);
+const mapDispatchToProps = (dispatch) =>{
+  return{
+    AddToCart: (product, amount, total) => dispatch(add_product_fn(product, amount, total))
+    
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Product);
   

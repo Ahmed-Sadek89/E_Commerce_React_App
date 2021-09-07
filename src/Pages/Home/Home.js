@@ -36,7 +36,7 @@ const Home = () => {
         {
           status ==='loading' &&
           <Typography variant='h1' color='primary' className={classes.textMessage}>
-            L o O D I N G.......
+            Loading.......
           </Typography>
         }
         {

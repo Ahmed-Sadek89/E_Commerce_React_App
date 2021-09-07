@@ -7,15 +7,17 @@ import {New, Img, Title, Price, SetFlex, ProductImage, ProductInfo, UserInteract
 import {connect} from 'react-redux';
 import {useState} from 'react';
 //components
-import {Update_product_fn, remove_Item_fn} from '../Redux/Action';
+import {Update_product_fn, remove_Item_fn} from '../Redux/Cart/Action';
 import { useStyles } from "./Style";
 
 
-const CartTag = ({id, cart, amount, date, remove_Item_fn, Update_product_fn}) => {
+const CartTag = ({id, cart, amount, date, RemoveItem, UpdateItem}) => {
   const classes = useStyles()
   const [currentAmount, setCurrentAmount] = useState(amount);
-  
-  //console.log('currentAmount: ',currentAmount);
+  const handleChangeAmount = (e) => {
+    setCurrentAmount(parseInt(e.target.value))
+    UpdateItem(id, parseInt(e.target.value))
+  } 
       return (
         <Grid item xs={12} className={classes.setPosition}>
          <New>{(date)}</New>
@@ -34,28 +36,31 @@ const CartTag = ({id, cart, amount, date, remove_Item_fn, Update_product_fn}) =>
                       {cart.title}
                     </Title>
                     <Price variant='inherit'>
-                      EGP {cart.price}
+                      $ {cart.price}
                     </Price>
                   </ProductInfo>
                 </Grid>
                 <Grid item xs={12} sm={3} md={3}>
                   <UserInteraction>
-                  <Select
-                   value={currentAmount}
-                   onChange={(e) => {
-                    remove_Item_fn(id)
-                    Update_product_fn(cart, parseInt(e.target.value), e.target.value*cart.price)
-                    setCurrentAmount(parseInt(e.target.value));
-                    //console.log(parseInt(e.target.value)*cart.price)
-                   }} >
+                  
+                   <Select
+                   value={currentAmount ? currentAmount : 1}
+                   onChange={(e) => handleChangeAmount(e)}
+                    >
                     <option value={1}>1</option>
                     <option value={2}>2</option>
                     <option value={3}>3</option>
                     <option value={4}>4</option>
                     <option value={5}>5</option>
                     <option value={6}>6</option>
+                    <option value={7}>7</option>
+                    <option value={8}>8</option>
+                    <option value={9}>9</option>
+                    <option value={10}>10</option>
+                    <option value={11}>11</option>
+                    <option value={12}>12</option>
                   </Select>
-                  <Button color="secondary" onClick={() => remove_Item_fn(id)}>
+                  <Button color="secondary" onClick={() => RemoveItem(id)}>
                       <DeleteOutlineIcon />
                   </Button>
                   </UserInteraction>
@@ -66,6 +71,11 @@ const CartTag = ({id, cart, amount, date, remove_Item_fn, Update_product_fn}) =>
         </Grid>
       );
     }
-     
-export default connect(null,{Update_product_fn, remove_Item_fn})(CartTag);
+const mapDispatchToProps = (dispatch) => {
+  return{
+    RemoveItem: (id) => dispatch(remove_Item_fn(id)),
+    UpdateItem: (id, newAmount) => dispatch(Update_product_fn(id, newAmount))
+  }
+}
+export default connect(null,mapDispatchToProps)(CartTag);
     
